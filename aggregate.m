@@ -14,7 +14,7 @@ AggLoopData = [];
 % 	v_Vel=loopdata(:,5);
 % 	LS=loopdata(:,6);
 
-[~,idx] = sort(loopdata(:,1));
+[~,idx] = sort(loopdata(:,1));% sort by location
 loopdata = loopdata(idx,:);
 
 [uniLocation,heads] = unique(loopdata(:,1));

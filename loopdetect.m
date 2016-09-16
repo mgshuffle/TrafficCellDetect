@@ -4,7 +4,8 @@ function [redata] = loopdetect(data)
 	sampleFrequency = 10;%Hz
 	RdLen = 1700;%road length 1700 feet
 	buffer = 100;%distance between feet
-	passTime = zeros(max(data(:,14)),floor(RdLen/buffer)+1);%initial passTime at Lane i(row) of Location j(column) is Inf
+	passTime = zeros(max(data(:,14)),floor(RdLen/buffer)+1);%initial passTime at Lane i(row) of Location j(column) is 0 laneIDNum*locationNum
+	passTimeGlobal = zeros(1,floor(RdLen/buffer)+1);
 	records = [];
 
 	[~,idx] = sort(data(:,2));
@@ -36,15 +37,18 @@ function [redata] = loopdetect(data)
 			loIdx = Location(idx_J)/buffer;
 			timeNow = uniFID(i)/sampleFrequency;
 			headway = zeros(length(idx_J),1);
+			headwayGlobal = zeros(length(idx_J),1);
 			for k = 1:length(idx_J)
 				headway(k) = timeNow - passTime(LaneID(k),loIdx(k));
 				passTime(LaneID(k),loIdx(k)) = timeNow;
+				headwayGlobal(k) = timeNow - passTimeGlobal(loIdx(k));
+				passTimeGlobal(loIdx(k)) = timeNow;
 			end
 			%fix v_vel==0
 			idxZeroV = idx_J(former(idx_J,12)==0);
 			former(idxZeroV,12) = (latter(idxZeroV,6)-former(idxZeroV,6))/0.1;
-			%format: Location VID FID(time) LaneID v_Vel(feet/s) LS headway
-			records = [records; Location(idx_J) former(idx_J,1:2) LaneID former(idx_J,12) former(idx_J,5)-12*former(idx_J,14)+6 headway];
+			%format: 1#Location 2#VID 3#FID(time) 4#LaneID 5#v_Vel(feet/s) 6#LS 7#headway
+			records = [records; Location(idx_J) former(idx_J,1:2) LaneID former(idx_J,12) former(idx_J,5)-12*former(idx_J,14)+6 headway headwayGlobal];
         end
 	end
 
