@@ -27,8 +27,8 @@ for i = 1:length(uniLocation)-1%except 1700feet location
     [~,idx3] = sort(ld(:,3));%sort by time
     ld = ld(idx3,:);
     subplot(3,1,1)
-%     hold on
-    plot(ld(:,3)/10,zeros(length(ld(:,1)),1),'.');%enter points
+    hold on
+    plot(ld(:,3)/10,(i-1)*0.5+zeros(length(ld(:,1)),1),'.');%enter points
     title('enter points');    
     subplot(3,1,2)
 %     hold on
