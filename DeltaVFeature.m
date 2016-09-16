@@ -47,7 +47,7 @@ function [dVmean, dVstd, Vmean, Veq, SHmean, SHstd, density] = DeltaVFeature(dat
 		fr_LC = Frame_ID(idx2_LC);
 		thislast = min(fr_LC(fr_LC>firstFID));
 		if (isempty(thislast)) 
-			return null;
+			
 		end
 		lastFID = min(lastFID, thislast);
 	end

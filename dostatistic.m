@@ -1,7 +1,7 @@
 %% dostatistic: get statistical results
 function [idx,cell_front,cell_length,num,density,mean_results,std_results,prop_names] = dostatistic(firstFID, data, lanenum)
 
-	t = tic();
+	%t = tic();
 
 	% Parse data
 	Vehicle_ID=data(:,1);
@@ -100,6 +100,6 @@ function [idx,cell_front,cell_length,num,density,mean_results,std_results,prop_n
 	mean_results = [mean_results1 mean_results2];
 	std_results = [std_results1 std_results2];
 
-	usingtime = toc(t);
+	%usingtime = toc(t);
 
 end

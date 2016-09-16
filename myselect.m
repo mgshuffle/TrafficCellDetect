@@ -16,19 +16,19 @@ function [output] = myselect(data)
 	Frame_ID=data(:,2);
 	%Total_Frames=data(:,3);
 	%Global_Time=data(:,4);
-	%Local_X=data(:,5);
-	%Local_Y=data(:,6);
+	Local_X=data(:,5);
+	Local_Y=data(:,6);
 	%Global_X=data(:,7);
 	%Global_Y=data(:,8);
 	%v_Length=data(:,9);
 	%v_Width=data(:,10);
 	v_Class=data(:,11);
-	%v_Vel=data(:,12);
+	v_Vel=data(:,12);
 	%v_Acc=data(:,13);
 	Lane_ID=data(:,14);
 	%Preceding=data(:,15);
 	%Following=data(:,16);
-	%Space_Headway=data(:,17);
+	Space_Headway=data(:,17);
 	%Time_Headway=data(:,18); 
 
 	
@@ -47,10 +47,10 @@ function [output] = myselect(data)
 		fr_LC = Frame_ID(idx2_LC);
 		thislast = min(fr_LC(fr_LC>firstFID));
 		if (isempty(thislast))
-            a = 1;
-        else
-            lastFID = min(lastFID, thislast);
-        end
+			%do sth
+			else
+				lastFID = min(lastFID, thislast);
+			end
+		end
 		
-    end
-end
+	end
