@@ -6,7 +6,7 @@ loopdata = loopdetect(data);
 [location,~] = unique(AggLoopData(:,1));
 figure
 hold on
-for i = 1:length(location)
+for i = 1:length(location)-1 %1700feet location doesn't count
     ald = AggLoopData(AggLoopData(:,1)==location(i),:);
     subplot(2,2,1)
     hold on
