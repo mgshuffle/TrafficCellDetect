@@ -2,7 +2,7 @@
 %dostatistic(firstFID, data, lanenum)
 
 %t = tic();
-load('data.mat');
+load('data_i80_1.mat');
 firstFID = 3200;
 lanenum = 1;
 theLaneID = 1;
@@ -107,24 +107,24 @@ for i = 1:fnum
 	k(i) = 1/(mean(Space_Headway(idx_nonzero))*feet2meter);
 	Ve(i) = a1*k(i)+a2;
 
-%     hold on
-% 	subplot(2,3,1)
-%     cla    
-%     hist(v_Vel(idx_selected)*feet2meter-Ve(i),10)
-%     title('{\Deltav} Distribution')
-%     subplot(2,3,2)
-%     cla    
-% 	hist(Space_Headway(idx_nonzero),10)
-%     title('Space Headway Distribution')
-%     subplot(2,3,3)
-%     cla    
-%     plot(Local_Y(idx_selected)-min(Local_Y(idx_selected)),0,'x')
-%     title('Position')
-%     subplot(2,3,4)
-%     plot(firstFID+i-1,num(i),'x');
-%     title('number of vehs')
-%     subplot(2,3,5)
-%     plot(firstFID+i-1,Ve(i),'x');
+    hold on
+	subplot(2,3,1)
+    cla    
+    hist(v_Vel(idx_selected)*feet2meter-Ve(i),10)
+    title('{\Deltav} Distribution')
+    subplot(2,3,2)
+    cla    
+	hist(Space_Headway(idx_nonzero),10)
+    title('Space Headway Distribution')
+    subplot(2,3,3)
+    cla    
+    plot(Local_Y(idx_selected)-min(Local_Y(idx_selected)),0,'x')
+    title('Position')
+    subplot(2,3,4)
+    plot(firstFID+i-1,num(i),'x');
+    title('number of vehs')
+    subplot(2,3,5)
+    plot(firstFID+i-1,Ve(i),'x');
 end
 
 density = num./(cell_length*feet2meter*lanenum);% unit veh/feet

@@ -23,7 +23,8 @@ tails = [heads(2:end);length(loopdata(:,1))];
 for i = 1:length(heads)%location i
     d = loopdata(heads(i):tails(i),:);
     timePerid = floor(d(:,3)/sampleFrequency/interval) + 1;
-    nLanes = max(d(:,4));
+    %nLanes = max(d(:,4));%drop
+    nLanes = laneCount(uniLocation(i));%wait for unit test
     
     m = range(timePerid)+1;
     m_first = min(timePerid);
@@ -36,6 +37,8 @@ for i = 1:length(heads)%location i
         %tailsLID = [headsLID;length(jData(:,4))];
         DetectedLanes = length(uniKLaneID);
         if DetectedLanes==0%no veh pass location J
+            %format: location timeEnd LaneNum Q(veh/s) ...
+            %        K1(veh/m) K2(veh/m) V1(m/s) V2(m/s)
             rows(j,:) = [uniLocation(i) (j+m_first-1)*interval nLanes 0 ...
                 0 0 0 0];
         else

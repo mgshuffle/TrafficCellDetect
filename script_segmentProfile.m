@@ -1,4 +1,4 @@
-load('data.mat')
+load('data_i80_2.mat')
 interval = 60;%seconds
 loopdata = loopdetect(data);
 [AggLoopData] = aggregate(loopdata,interval);

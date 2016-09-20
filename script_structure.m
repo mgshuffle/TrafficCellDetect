@@ -1,6 +1,6 @@
-% load('data.mat')
-% interval = 60;%seconds
-% loopdata = loopdetect(data);
+load('data_i80_1.mat')
+interval = 60;%seconds
+loopdata = loopdetect(data);
 
 [~,idx] = sort(loopdata(:,1));% sort by location
 loopdata = loopdata(idx,:);
@@ -10,7 +10,7 @@ figure
 hold on
 title('headway structure')
 for i = 1:length(uniLocation)-1%except 1700feet location 
-    ld = loopdata(loopdata(:,1)==uniLocation(i)&loopdata(:,3)>1000,:);%this location and time>100s (get rid of initial environment) 
+    ld = loopdata(loopdata(:,1)==uniLocation(i),:);%this location and time>100s (get rid of initial environment) %&loopdata(:,3)>1000
     [~,idx2] = sort(ld(:,4));%sort by laneid
     ld = ld(idx2,:);
     [uniLaneID,~]=unique(ld(:,4));
@@ -20,7 +20,7 @@ for i = 1:length(uniLocation)-1%except 1700feet location
 %     	ld2 = ld(ld(:,4)==uniLaneID(j),:);
 %     	[~,idx3] = sort(ld2(:,3));%sort by time
 %     	ld2 = ld2(idx3,:);
-%     	plot3(ld2(:,3)/10,ld2(:,4),ld2(:,7),'x')%[0;diff(ld2(:,7))]
+%     	plot3(ld2(:,3)/10,ld2(:,4),ld2(:,8),'x')%[0;diff(ld2(:,7))]
 %     end
     
     %global headway
