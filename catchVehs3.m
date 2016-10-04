@@ -1,4 +1,5 @@
-function [cell_front,cell_end,k,Ve,rawVi,meanVi,stdVi,nextFID] = catchVehs(data,firstFID,WinLowerB,WinUperB)
+% output raw data
+function [cell_front,cell_end,k,Ve,rawData,meanVi,stdVi,nextFID] = catchVehs3(data,firstFID,WinLowerB,WinUperB)
 
     %theLane = 2;
 
@@ -48,7 +49,7 @@ function [cell_front,cell_end,k,Ve,rawVi,meanVi,stdVi,nextFID] = catchVehs(data,
 	num = zeros(fnum,1);
     k = zeros(fnum,1);
     Ve = zeros(fnum,1);
-	rawVi = cell(fnum,1);
+	rawData = cell(fnum,1);
 	meanVi = zeros(fnum,1);
 	stdVi = zeros(fnum,1);
 
@@ -76,7 +77,7 @@ function [cell_front,cell_end,k,Ve,rawVi,meanVi,stdVi,nextFID] = catchVehs(data,
         Ve(i) = SD2(k(i)*1000,sdPara)./3.6;
 
 		tmp = v_Vel(idx_selected)*feet2meter;%
-        rawVi(i) = {tmp};
+        rawData(i) = {data(idx_selected,:)};
 		meanVi(i) = mean(tmp);
 		stdVi(i) = std(tmp);
 
