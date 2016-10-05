@@ -43,10 +43,6 @@ function val = naturalCubicSpl(x,y,xx)
 		x = x';
 	end%col vector
 
-%	if length(y(1,:))>1
-%		y = y';
-%	end%col vector
-
 	if length(xx(:,1))>1
 		xx = xx';
 	end%row vector
@@ -55,6 +51,12 @@ function val = naturalCubicSpl(x,y,xx)
 	[tmpRow,tmpCol] = find(tmp<0);
 	[~,idx1] = sort(tmpCol);
 	idx = tmpRow(idx1);
+
+	xx = xx';%col vector now
+	
+	if length(y(1,:))>1
+		y = y';
+	end%col vector
 
 	val = (h(idx)+2*(xx-x(idx))).*(xx-x(idx+1)).^2.*y(idx)./h(idx).^3 + ...
 		  (h(idx)+2*(xx-x(idx+1))).*(xx-x(idx)).^2.*y(idx+1)./h(idx).^3 + ...
