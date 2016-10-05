@@ -1,5 +1,14 @@
 function val = naturalCubicSpl(x,y,xx)
 
+	if length(x(1,:))>1
+		x = x';
+	end%col vector
+
+	if length(y(1,:))>1
+		y = y';
+	end%col vector
+
+
 	n = length(x) - 1;
 	nxx = length(xx);
 	hy = diff(y);
@@ -18,17 +27,20 @@ function val = naturalCubicSpl(x,y,xx)
 	rowMiu = rowLamda;
 	colMiu = 3:n+1;
 
-	if length(lamda(:,1))>1
-		lamda = lamda';
-	end%row vector
+%	if length(lamda(:,1))>1
+%		lamda = lamda';
+%	end%row vector
 
-	if length(miu(:,1))>1
-		miu = miu';
-	end%row vector
+%	if length(miu(:,1))>1
+%		miu = miu';
+%	end%row vector
 
-	if length(g(1,:))>1
-		g = g';
-	end%col vector
+%	if length(g(1,:))>1
+%		g = g';
+%	end%col vector
+
+	lamda = lamda';%change to row vector
+	miu = miu';%change to row vector
 
 	MAT = sparse([rowLamda n+1 rowMiu 1 1:n+1],...
 				 [colLamda n colMiu 2 1:n+1],...
@@ -38,10 +50,6 @@ function val = naturalCubicSpl(x,y,xx)
 	G = [g0;g;gn];
 
 	m = MAT\G;%col vector
-
-	if length(x(1,:))>1
-		x = x';
-	end%col vector
 
 	if length(xx(:,1))>1
 		xx = xx';
@@ -53,10 +61,6 @@ function val = naturalCubicSpl(x,y,xx)
 	idx = tmpRow(idx1);
 
 	xx = xx';%col vector now
-	
-	if length(y(1,:))>1
-		y = y';
-	end%col vector
 
 	val = (h(idx)+2*(xx-x(idx))).*(xx-x(idx+1)).^2.*y(idx)./h(idx).^3 + ...
 		  (h(idx)+2*(xx-x(idx+1))).*(xx-x(idx)).^2.*y(idx+1)./h(idx).^3 + ...
