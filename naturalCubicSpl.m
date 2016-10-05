@@ -1,17 +1,5 @@
 function val = naturalCubicSpl(x,y,xx)
 
-	if length(x(:,1))>1
-		x = x';
-	end%row vector
-
-	if length(y(:,1))>1
-		y = y';
-	end%row vector
-
-	if length(xx(:,1))>1
-		xx = xx';
-	end%row vector
-
 	n = length(x) - 1;
 	nxx = length(xx);
 	hy = diff(y);
@@ -30,13 +18,13 @@ function val = naturalCubicSpl(x,y,xx)
 	rowMiu = rowLamda;
 	colMiu = 3:n+1;
 
-%	if length(lamda(:,1))>1
-%		lamda = lamda';
-%	end%row vector
+	if length(lamda(:,1))>1
+		lamda = lamda';
+	end%row vector
 
-%	if length(miu(:,1))>1
-%		miu = miu';
-%	end%row vector
+	if length(miu(:,1))>1
+		miu = miu';
+	end%row vector
 
 	if length(g(1,:))>1
 		g = g';
@@ -49,7 +37,19 @@ function val = naturalCubicSpl(x,y,xx)
 
 	G = [g0;g;gn];
 
-	m = MAT\G;
+	m = MAT\G;%col vector
+
+	if length(x(1,:))>1
+		x = x';
+	end%col vector
+
+%	if length(y(1,:))>1
+%		y = y';
+%	end%col vector
+
+	if length(xx(:,1))>1
+		xx = xx';
+	end%row vector
 
 	tmp = (repmat(x(1:end-1),1,nxx)-repmat(xx,n,1)).*(repmat(x(2:end),1,nxx)-repmat(xx,n,1));
 	[tmpRow,tmpCol] = find(tmp<0);
