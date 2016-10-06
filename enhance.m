@@ -17,13 +17,13 @@ function [s, v, a] = enhance(rawS,sampleFreq)
 	s1 = rawS;
 
 	%Pick out outliers
-	unPhyAcc = 30%m/s^2
+	unPhyAcc = 30;%m/s^2
 	idx_outlierInAcc = find(rawA>unPhyAcc);
 	idx_out = idx_outlierInAcc + 1;%Outlier in S
 
 	%interpolation
-	bufferTimeWin = 1%s
-	bffNum = bufferTimeWin*sampleFreq
+	bufferTimeWin = 1.0;%s
+	bffNum = bufferTimeWin*sampleFreq;
 	if ~isempty(idx_out)
 		idx_beforeOut = idx_out - bffNum;
 		idx_beforeOut = max(1,idx_beforeOut);
@@ -33,8 +33,8 @@ function [s, v, a] = enhance(rawS,sampleFreq)
 		idx_afterOut = min(sampleCount,idx_afterOut);
 		for i=1:length(idx_out)
 			outP = idx_out(i);
-			refP = setdiff(idx_beforeOut:idx_afterOut,idx_out);
-			if length(refP<10)
+			refP = setdiff(idx_beforeOut(i):idx_afterOut(i),idx_out);
+			if length(refP)<10
 				error('refPoints not enough')
 			else
 				s1(outP) = naturalCubicSpl(refP/sampleFreq,rawS(refP),outP/sampleFreq);
@@ -63,9 +63,9 @@ function [s, v, a] = enhance(rawS,sampleFreq)
 	v1 = diff(s1)*sampleFreq;
 
 	%Step2: 1st order Butterworth lowpass filtering in speed profile
-	fc = 1.25%Hz
+	fc = 1.25;%Hz
 	[paraB,paraA] = butter(1,fc/(sampleFreq/2));
-	v2 = filter(paraB,paraA,v1);
+    v2 = filter(paraB,paraA,v1);
 	a2 = diff(v2)*sampleFreq;
 
 	%step3 & 4 ignored temporary
