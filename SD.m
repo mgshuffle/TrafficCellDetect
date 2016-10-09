@@ -1,4 +1,8 @@
-%% SD: speed-density function with parameters of vMax vMin kJam a b 
-function velEql = SD(x,vMax,vMin,kJam,a,b)
-	velEql = vMin + (vMax - vMin)*(1-(x/kJam).^a).^b;
+function velEql = SD(K,para)
+	vMax = para(1);
+	vMin = para(2);
+	kJam = para(3);
+	a = para(4);
+	b = para(5);
+	velEql = vMin + (vMax - vMin)*(1-(K/kJam).^a).^b;
 end

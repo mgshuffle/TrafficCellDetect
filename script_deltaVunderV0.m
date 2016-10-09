@@ -1,4 +1,5 @@
 load('data_i80_2.mat');
+%load('enhanced_data_i80_2.mat');
 
 % Parse data
 Frame_ID=data(:,2);
@@ -16,8 +17,6 @@ Ve_all = [];
 k_all = [];
 meanVi = [];
 stdVi = [];
-Y=[];
-X=[];
 FNUM=[];
 nowFID = firstFID;
 nextFID = 0;
@@ -33,15 +32,11 @@ while nextFID<4800
     k_all = [k_all;k];
 	meanVi = [meanVi; mv];
 	stdVi = [stdVi; sv];
-    y=mv-Ve;
-    Y = [Y;y];
-    x=sv.^2;
-    X = [X;x];
-    FNUM = [FNUM;length(y)];
+    FNUM = [FNUM;length(k)];
 	nowFID = nextFID;
     disp(nowFID);
     
-    plot(x,y,'.')
+    plot(k*1000,sv./mv,'.')
 %     subplot(1,3,1)
 %     plot(k*1000,mv*3.6,'.')
 %     %plot(Ve_all*3.6,'k')
