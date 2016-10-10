@@ -1,5 +1,5 @@
 %输入必须是等时间间距的序列
-function [s, v] = enhance(rawS,sampleFreq)
+function [s, v] = enhance2(rawS,sampleFreq)
 
 feet2meter = 0.3048;
 if isempty(sampleFreq)
@@ -19,12 +19,23 @@ s1 = rawS;
 %Pick out outliers
 unPhyAcc = 30;%m/s^2
 idx_outlierInAcc = find(abs(rawA)>unPhyAcc);
-idx_out = idx_outlierInAcc + 1;%Outlier in S
+idx_out = [idx_outlierInAcc;idx_outlierInAcc+1;idx_outlierInAcc+2];%Outlier in S
+idx_out = unique(idx_out);
 
 %interpolation
 bufferTimeWin = 1.0;%s
 bffNum = bufferTimeWin*sampleFreq;
 if ~isempty(idx_out)
+    dis_out = diff(idx_out);
+    idx_BrkPnt = find(dis_out>bffNum*2);
+    if isempty(idx_BrkPnt)
+        interPnts = min(idx_out):max(idx_out);
+        left = max(1,min(idx_out)-bffNum):min(idx_out)-1;
+        right = 
+    else
+        
+    end
+    
     idx_beforeOut = idx_out - bffNum;
     idx_beforeOut = max(1,idx_beforeOut);
     idx_beforeOut = min(sampleCount,idx_beforeOut);
@@ -51,10 +62,33 @@ if ~isempty(idx_out)
             warning('give up interpolation refPoints not enough or xx out of range')
         else
             s1(outP) = naturalCubicSpl(refP/sampleFreq,rawS(refP),outP/sampleFreq);
+%             cs = csapi(refP/sampleFreq,rawS(refP));
+%             brks = find((refP(1:end-1)-outP).*(refP(2:end)-outP)<0);
+%             paras = cs.coefs(brks,:);
+%             s1(outP) = polyval(paras,outP/sampleFreq);
         end
     end
 end
-%s1 = myfun(30,rawA,rawS,sampleFreq,sampleCount);
+
+%	if ~isempty(idx_out)
+%		pNow = 1;
+%		Ps = 1;
+%		if idx_out(1)<11
+%			beforePoints = rawS(1:idx_out-1);
+%		else
+%			beforePoints = rawS(idx_out-10:idx_out-1);
+%		end
+%		while(pNow<=length(idx_out))
+%			if idx_out(pNow)+10<idx_out(pNow+1) || pNow==length(idx_out) %last point
+%				%add afterPoints
+%				%do enhance
+%			else
+%				%Ps++
+%				%pNow++
+%			end
+%			pNow = pNow+1;
+%		end
+%	end
 v1 = diff(s1)*sampleFreq;
 
 %Step2: 1st order Butterworth lowpass filtering in speed profile
@@ -64,9 +98,6 @@ vtmp = v1 - v1(1);%shifting to 0
 v2 = filter(paraB,paraA,vtmp)+v1(1);
 
 %step3 & 4 ignored temporary
-
-%a2 = diff(v2)*sampleFreq;
-%v3 = myfun(10,a2,v2,sampleFreq,sampleCount);
 
 %debuging
 figure
@@ -90,45 +121,3 @@ plot(idx_out-1,rawA(idx_out-1),'o')
 s = s1;
 v = v2;
 end
-
-% function s1 = myfun(unPhyAcc,rawA,rawS,sampleFreq,sampleCount)
-% s1 = rawS;
-% %Pick out outliers
-% %unPhyAcc = 30;%m/s^2
-% idx_outlierInAcc = find(abs(rawA)>unPhyAcc);
-% idx_out = idx_outlierInAcc + 1;%Outlier in S
-% 
-% %interpolation
-% bufferTimeWin = 1.0;%s
-% bffNum = bufferTimeWin*sampleFreq;
-% if ~isempty(idx_out)
-%     idx_beforeOut = idx_out - bffNum;
-%     idx_beforeOut = max(1,idx_beforeOut);
-%     idx_beforeOut = min(sampleCount,idx_beforeOut);
-%     idx_afterOut = idx_out + bffNum;
-%     idx_afterOut = max(1,idx_afterOut);
-%     idx_afterOut = min(sampleCount,idx_afterOut);
-%     for i=1:length(idx_out)
-%         outP = idx_out(i);
-%         refP = setdiff(idx_beforeOut(i):idx_afterOut(i),idx_out);%upgrade
-%         crNum = ceil(0.85*2*bffNum);
-%         if length(refP)<crNum
-%             rest = setdiff((1:sampleCount)',idx_out);
-%             dist = abs(rest-outP);
-%             [~,order] = sort(dist);
-%             rest = rest(order);
-%             if length(rest)>2*bffNum
-%                 refP = rest(1:2*bffNum);
-%                 refP = sort(refP);
-%             else
-%                 warning('not enough refP')
-%             end
-%         end
-%         if length(refP)<crNum || outP>max(refP)
-%             warning('give up interpolation refPoints not enough or xx out of range')
-%         else
-%             s1(outP) = naturalCubicSpl(refP/sampleFreq,rawS(refP),outP/sampleFreq);
-%         end
-%     end
-% end
-% end
