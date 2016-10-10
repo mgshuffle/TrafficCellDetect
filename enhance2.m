@@ -28,67 +28,36 @@ bffNum = bufferTimeWin*sampleFreq;
 if ~isempty(idx_out)
     dis_out = diff(idx_out);
     idx_BrkPnt = find(dis_out>bffNum*2);
-    if isempty(idx_BrkPnt)
-        interPnts = min(idx_out):max(idx_out);
-        left = max(1,min(idx_out)-bffNum):min(idx_out)-1;
-        right = 
+
+    if min(interPnts)==1
+        left = [];
+        warning('left edge');
     else
-        
+        left = [max(1,min(interPnts)-bffNum) min(interPnts)-1];
     end
-    
-    idx_beforeOut = idx_out - bffNum;
-    idx_beforeOut = max(1,idx_beforeOut);
-    idx_beforeOut = min(sampleCount,idx_beforeOut);
-    idx_afterOut = idx_out + bffNum;
-    idx_afterOut = max(1,idx_afterOut);
-    idx_afterOut = min(sampleCount,idx_afterOut);
-    for i=1:length(idx_out)
-        outP = idx_out(i);
-        refP = setdiff(idx_beforeOut(i):idx_afterOut(i),idx_out);%upgrade
-        crNum = ceil(0.85*2*bffNum);
-        if length(refP)<crNum
-            rest = setdiff((1:sampleCount)',idx_out);
-            dist = abs(rest-outP);
-            [~,order] = sort(dist);
-            rest = rest(order);
-            if length(rest)>2*bffNum
-                refP = rest(1:2*bffNum);
-                refP = sort(refP);
-            else
-                warning('not enough refP')
-            end
-        end
-        if length(refP)<crNum || outP>max(refP)
-            warning('give up interpolation refPoints not enough or xx out of range')
-        else
-            s1(outP) = naturalCubicSpl(refP/sampleFreq,rawS(refP),outP/sampleFreq);
-%             cs = csapi(refP/sampleFreq,rawS(refP));
-%             brks = find((refP(1:end-1)-outP).*(refP(2:end)-outP)<0);
-%             paras = cs.coefs(brks,:);
-%             s1(outP) = polyval(paras,outP/sampleFreq);
-        end
+    if max(interPnts)==sampleCount
+        right = [];
+        warning('right edge');
+    else
+        right = [max(interPnts)+1 min(sampleCount,max(interPnts)+bffNum)];
+    end
+
+    if isempty(idx_BrkPnt)
+        interPnts = [min(idx_out) max(idx_out)];
+        ref = [left right];
+    else
+        interPnts = [[ids_out(1);ids_out(idx_BrkPnt+1)] [idx_out(idx_BrkPnt);idx_out(end)]];
+        ref = [[left; [ids_out(idx_BrkPnt+1)-bffNum ids_out(idx_BrkPnt+1)-1]] [[idx_out(idx_BrkPnt)+1 idx_out(idx_BrkPnt)+bffNum]; right]];
+    end
+
+    for i = 1:length(interPnts(:,1))
+        xx = (interPnts(i,1):interPnts(i,2))';
+        refX = ([ref(i,1):ref(i,2) ref(i,3):ref(i,4)])';
+        refY = rawS(refX);
+        s1(xx) = naturalCubicSpl(refX,refY,xx);
     end
 end
 
-%	if ~isempty(idx_out)
-%		pNow = 1;
-%		Ps = 1;
-%		if idx_out(1)<11
-%			beforePoints = rawS(1:idx_out-1);
-%		else
-%			beforePoints = rawS(idx_out-10:idx_out-1);
-%		end
-%		while(pNow<=length(idx_out))
-%			if idx_out(pNow)+10<idx_out(pNow+1) || pNow==length(idx_out) %last point
-%				%add afterPoints
-%				%do enhance
-%			else
-%				%Ps++
-%				%pNow++
-%			end
-%			pNow = pNow+1;
-%		end
-%	end
 v1 = diff(s1)*sampleFreq;
 
 %Step2: 1st order Butterworth lowpass filtering in speed profile
